@@ -1,4 +1,4 @@
-from .masks import get_mask_card_number, get_mask_account
+from src.masks import get_mask_account, get_mask_card_number
 
 
 def mask_account_card(data: str) -> str:
@@ -6,15 +6,15 @@ def mask_account_card(data: str) -> str:
     Функция принимает строку, содержащую тип и номер карты или счета
     и возвращает строку с замаскированным номером.
     """
-    words = data.split()
-    type_ = words[0]
-    number = " ".join(words[1:])
+    try:
+        name, number = data.rsplit(' ', maxsplit=1)
+    except ValueError:
+        raise ValueError(f"Некорректный формат данных: '{data}'")
 
-    if type_ in ("Visa", "MasterCard", "Maestro"):
-        return f"{type_} {get_mask_card_number(number)}"
-    elif type_ == "Счет":
-        return f"{type_} {get_mask_account(number)}"
-    raise ValueError(f"Неизвестный тип карты или счета: {type_}")
+    if name == "Счет":
+        return f"{name} {get_mask_account(number)}"
+    else:
+        return f"{name} {get_mask_card_number(number)}"
 
 
 def get_date(date_str: str) -> str:
