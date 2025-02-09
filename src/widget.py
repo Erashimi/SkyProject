@@ -1,3 +1,6 @@
+from .masks import get_mask_card_number, get_mask_account
+
+
 def mask_account_card(data: str) -> str:
     """
     Функция принимает строку, содержащую тип и номер карты или счета
@@ -11,6 +14,7 @@ def mask_account_card(data: str) -> str:
         return f"{type_} {get_mask_card_number(number)}"
     elif type_ == "Счет":
         return f"{type_} {get_mask_account(number)}"
+    raise ValueError(f"Неизвестный тип карты или счета: {type_}")
 
 
 def get_date(date_str: str) -> str:
@@ -23,7 +27,6 @@ def get_date(date_str: str) -> str:
         day = date_str[8:10]
 
         result = f"{day}.{month}.{year}"
-
         return result
     except IndexError as e:
         raise ValueError(f"Невозможно преобразовать дату: {date_str}") from e
