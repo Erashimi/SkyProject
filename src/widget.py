@@ -7,7 +7,7 @@ def mask_account_card(data: str) -> str:
     и возвращает строку с замаскированным номером.
     """
     try:
-        name, number = data.rsplit(' ', maxsplit=1)
+        name, number = data.rsplit(" ", maxsplit=1)
     except ValueError:
         raise ValueError(f"Некорректный формат данных: '{data}'")
 
