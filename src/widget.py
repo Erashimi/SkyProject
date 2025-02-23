@@ -18,15 +18,16 @@ def mask_account_card(data: str) -> str:
 
 
 def get_date(date_str: str) -> str:
-    """
-    Преобразует строку даты в формат "ДД.ММ.ГГГГ".
-    """
+    """Преобразует строку даты в формат "ДД.ММ.ГГГГ"."""
+    if len(date_str) < 10:
+        raise ValueError(f"Невозможно преобразовать дату: {date_str}")
     try:
         year = date_str[:4]
         month = date_str[5:7]
         day = date_str[8:10]
-
-        result = f"{day}.{month}.{year}"
-        return result
-    except IndexError as e:
+        # Проверка, что месяц и день состоят из цифр
+        if not (month.isdigit() and day.isdigit()):
+            raise ValueError
+        return f"{day}.{month}.{year}"
+    except (IndexError, ValueError) as e:
         raise ValueError(f"Невозможно преобразовать дату: {date_str}") from e
