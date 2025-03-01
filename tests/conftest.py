@@ -44,3 +44,27 @@ def account_card_data(request):
 ])
 def date_data(request):
     return request.param
+
+@pytest.fixture
+def sample_transactions():
+    return [
+        {
+            "id": 1,
+            "operationAmount": {"amount": "100", "currency": {"code": "USD"}},
+            "description": "Payment 1",
+        },
+        {
+            "id": 2,
+            "operationAmount": {"amount": "200", "currency": {"code": "EUR"}},
+            "description": "Payment 2",
+        },
+        {
+            "id": 3,
+            "operationAmount": {"amount": "300", "currency": {"code": "USD"}},
+            "description": "Payment 3",
+        },
+    ]
+
+@pytest.fixture
+def empty_transactions():
+    return []
