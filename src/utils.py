@@ -8,12 +8,10 @@ logger = logging.getLogger("utils")
 logger.setLevel(logging.DEBUG)
 
 file_handler = logging.FileHandler("logs/utils.log", mode="w", encoding="utf-8")
-file_formatter = logging.Formatter(
-    "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
-)
+file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
+
 
 def load_transactions(file_path: str) -> list:
     """Загружает транзакции из JSON-файла"""
