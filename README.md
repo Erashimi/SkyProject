@@ -109,6 +109,15 @@ def multiply(x: int, y: int) -> int:
 multiply(3, 4)  # Запись в operations.log: "multiply ok"
 ```
 
+### 6. data_reader.py
+
+**Модуль предоставляет функции для чтения финансовых транзакций из CSV- и Excel-файлов**
+
+- `load_csv_transactions(file_path: str) -> List[Dict]`
+Загружает транзакции из CSV-файла.
+- `load_excel_transactions(file_path: str) -> List[Dict]`
+Загружает транзакции из Excel-файла.
+
 ### Тестирование
 
 Проект включает 4 тестовых модуля с использованием pytest:
