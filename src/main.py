@@ -10,7 +10,7 @@ from src.transaction_utils import (
 
 
 def print_transaction(tx: dict) -> None:
-    """ Выводит транзакцию в заданном формате """
+    """Выводит транзакцию в заданном формате"""
     date = datetime.strptime(tx["date"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d.%m.%Y")
     description = tx["description"]
 
