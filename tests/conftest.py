@@ -74,3 +74,12 @@ def sample_transactions():
 @pytest.fixture
 def empty_transactions():
     return []
+
+
+@pytest.fixture
+def status_transactions():
+    return [
+        {"description": "Payment", "status": "EXECUTED"},
+        {"description": "Transfer", "status": "CANCELED"},
+        {"description": "Payment", "status": "PENDING"},
+    ]
