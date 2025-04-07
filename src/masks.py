@@ -13,21 +13,11 @@ logger.addHandler(file_handler)
 
 
 def get_mask_card_number(card_number: str) -> str:
-    """Маскирует номер карты"""
-    try:
-        card_number = card_number.replace(" ", "")
-        card_blocks = (
-            card_number[:4],
-            card_number[4:6] + "**",
-            "****",
-            card_number[-4:],
-        )
-        masked_number = " ".join(card_blocks)
-        logger.info(f"Успешное маскирование карты: {masked_number}")
-        return masked_number
-    except Exception as e:
-        logger.error(f"Ошибка маскирования карты: {e}", exc_info=True)
-        raise
+    """Маскирует номера вида *7197 в формат **** **** **** 7197."""
+    digits = "".join([c for c in card_number if c.isdigit()])[-4:]
+    if len(digits) != 4:
+        return "Некорректный номер"
+    return f"**** **** **** {digits}"
 
 
 def get_mask_account(account_number: str) -> str:

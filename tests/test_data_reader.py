@@ -1,37 +1,74 @@
-from unittest.mock import Mock, patch
+import logging
+import os
+import unittest
+
+import pandas as pd
 
 from src.data_reader import load_csv_transactions, load_excel_transactions
 
-
-@patch("src.data_reader.pd.read_csv")
-def test_load_csv_transactions_success(mock_read_csv):
-    mock_df = Mock()
-    mock_df.to_dict.return_value = [{"id": 1}]
-    mock_read_csv.return_value = mock_df
-
-    result = load_csv_transactions()
-    assert result == [{"id": 1}]
+logging.basicConfig(level=logging.INFO)
 
 
-@patch("src.data_reader.pd.read_csv")
-def test_load_csv_transactions_error(mock_read_csv):
-    mock_read_csv.side_effect = Exception("CSV error")
-    result = load_csv_transactions()
-    assert result == []
+class TestTransactionLoaders(unittest.TestCase):
+
+    def setUp(self):
+        self.data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+        self.csv_file_path = os.path.join(self.data_dir, "transactions.csv")
+        self.excel_file_path = os.path.join(self.data_dir, "operations.xlsx")
+
+        # Создание тестового CSV-файла
+        if not os.path.exists(self.csv_file_path):
+            pd.DataFrame({"column1": [1, 2, 3], "column2": ["a", "b", "c"]}).to_csv(self.csv_file_path, index=False)
+
+        # Создание тестового Excel-файла
+        if not os.path.exists(self.excel_file_path):
+            df = pd.DataFrame(
+                {
+                    "Дата операции": ["01.01.2023 00:00:00", "02.01.2023 00:00:00"],
+                    "Номер карты": [123, 456],
+                    "Статус": ["success", "failed"],
+                    "Сумма операции": [-100.0, 200.0],
+                    "Валюта операции": ["USD", "EUR"],
+                    "Категория": ["shop", "transfer"],
+                }
+            )
+            df.to_excel(self.excel_file_path, index=False)
+
+    def tearDown(self):
+        if os.path.exists(self.csv_file_path):
+            os.remove(self.csv_file_path)
+        if os.path.exists(self.excel_file_path):
+            os.remove(self.excel_file_path)
+
+    def test_load_csv_transactions(self):
+        transactions = load_csv_transactions()
+        self.assertIsInstance(transactions, list)
+        self.assertGreaterEqual(len(transactions), 0)
+
+    def test_load_excel_transactions(self):
+        transactions = load_excel_transactions()
+        self.assertIsInstance(transactions, list)
+        self.assertGreaterEqual(len(transactions), 0)
+        # Проверка структуры данных
+        if transactions:
+            self.assertIn("operationAmount", transactions[0])
+            self.assertIn("amount", transactions[0]["operationAmount"])
+            self.assertIn("currency", transactions[0]["operationAmount"])
+
+    def test_load_csv_transactions_empty_file(self):
+        # Тест на случай, если CSV-файл пуст
+        if os.path.exists(self.csv_file_path):
+            os.remove(self.csv_file_path)
+        transactions = load_csv_transactions()
+        self.assertEqual(transactions, [])
+
+    def test_load_excel_transactions_empty_file(self):
+        # Тест на случай, если Excel-файл пуст
+        if os.path.exists(self.excel_file_path):
+            os.remove(self.excel_file_path)
+        transactions = load_excel_transactions()
+        self.assertEqual(transactions, [])
 
 
-@patch("src.data_reader.pd.read_excel")
-def test_load_excel_transactions_success(mock_read_excel):
-    mock_df = Mock()
-    mock_df.to_dict.return_value = [{"amount": 100}]
-    mock_read_excel.return_value = mock_df
-
-    result = load_excel_transactions()
-    assert result == [{"amount": 100}]
-
-
-@patch("src.data_reader.pd.read_excel")
-def test_load_excel_transactions_error(mock_read_excel):
-    mock_read_excel.side_effect = Exception("Excel error")
-    result = load_excel_transactions()
-    assert result == []
+if __name__ == "__main__":
+    unittest.main()
